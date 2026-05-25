@@ -3,63 +3,64 @@
 namespace App\Http\Controllers;
 
 use App\Models\Pembayaran;
+use App\Models\Transaksi;
 use Illuminate\Http\Request;
 
 class PembayaranController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        $pembayarans = Pembayaran::with('transaksi.pelanggan')->get();
+        return view('pembayaran.index', compact('pembayarans'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        //
+        $transaksis = Transaksi::with('pelanggan')
+                               ->where('status', 'aktif')
+                               ->get();
+        return view('pembayaran.create', compact('transaksis'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'transaksi_id' => 'required|exists:transaksi,id',
+            'jumlah_bayar' => 'required|integer',
+            'metode'       => 'required|in:cash,transfer,qris',
+            'status_bayar' => 'required|in:lunas,belum_lunas,dp',
+            'tgl_bayar'    => 'required|date',
+        ]);
+
+        Pembayaran::create($request->all());
+        return redirect()->route('pembayaran.index')
+                         ->with('success', 'Pembayaran berhasil ditambahkan!');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Pembayaran $pembayaran)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Pembayaran $pembayaran)
     {
-        //
+        $transaksis = Transaksi::with('pelanggan')->get();
+        return view('pembayaran.edit', compact('pembayaran', 'transaksis'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, Pembayaran $pembayaran)
     {
-        //
+        $request->validate([
+            'jumlah_bayar' => 'required|integer',
+            'metode'       => 'required|in:cash,transfer,qris',
+            'status_bayar' => 'required|in:lunas,belum_lunas,dp',
+            'tgl_bayar'    => 'required|date',
+        ]);
+
+        $pembayaran->update($request->all());
+        return redirect()->route('pembayaran.index')
+                         ->with('success', 'Pembayaran berhasil diupdate!');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Pembayaran $pembayaran)
     {
-        //
+        $pembayaran->delete();
+        return redirect()->route('pembayaran.index')
+                         ->with('success', 'Pembayaran berhasil dihapus!');
     }
 }
