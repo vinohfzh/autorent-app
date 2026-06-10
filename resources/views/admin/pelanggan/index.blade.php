@@ -3,6 +3,12 @@
 @section('content')
 <div class="container-fluid px-0">
 
+    @if(session('success'))
+        <div class="alert alert-success d-flex align-items-center gap-2 mb-4 rounded-3 border-0 shadow-sm" role="alert" style="background-color: #f0fdf4; color: #166534;">
+            <i class="bi bi-check-circle-fill"></i>
+            <div>{{ session('success') }}</div>
+        </div>
+    @endif
     <div class="d-flex flex-column flex-sm-row align-items-start align-items-sm-center justify-content-between gap-3 mb-4">
         <div>
             <h1 class="fw-bold fs-3 mb-1">Pelanggan</h1>
@@ -51,12 +57,15 @@
                                     <a href="mailto:{{ $p->email }}" class="text-indigo text-decoration-none" title="{{ $p->email }}">{{ $p->email ?? '-' }}</a>
                                 </td>
                                 <td class="py-3">
-                                    <div class="d-flex align-items-center justify-content-end">
+                                    <div class="d-flex align-items-center justify-content-end gap-2">
+                                        <a href="{{ route('admin.pelanggan.edit', $p->id) }}" class="btn btn-light btn-sm rounded-pill px-3" style="font-size: 0.75rem;">
+                                            <i class="bi bi-pencil me-1"></i> Edit
+                                        </a>
                                         <form method="POST" action="{{ route('admin.pelanggan.destroy', $p->id) }}" class="needs-loading" onsubmit="return confirmAction(event, this, 'Hapus Pelanggan?', 'Data pelanggan {{ $p->nama }} akan dihapus permanen.', 'Ya, Hapus', '#dc2626');">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-outline-danger btn-sm rounded-pill px-3" style="font-size: 0.75rem;">
-                                                <i class="bi bi-trash"></i> Hapus
+                                                <i class="bi bi-trash"></i>
                                             </button>
                                         </form>
                                     </div>

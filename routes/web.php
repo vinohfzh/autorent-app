@@ -36,6 +36,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/pelanggan', [\App\Http\Controllers\PelangganController::class, 'index'])->name('pelanggan.index');
     Route::get('/pelanggan/create', [\App\Http\Controllers\PelangganController::class, 'create'])->name('pelanggan.create');
     Route::post('/pelanggan', [\App\Http\Controllers\PelangganController::class, 'store'])->name('pelanggan.store');
+    Route::get('/pelanggan/{pelanggan}/edit', [\App\Http\Controllers\PelangganController::class, 'edit'])->name('pelanggan.edit');
+    Route::patch('/pelanggan/{pelanggan}', [\App\Http\Controllers\PelangganController::class, 'update'])->name('pelanggan.update');
     Route::delete('/pelanggan/{pelanggan}', [\App\Http\Controllers\PelangganController::class, 'destroy'])->name('pelanggan.destroy');
 
     // Pembayaran Management

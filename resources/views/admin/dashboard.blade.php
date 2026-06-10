@@ -210,13 +210,13 @@
                                     </div>
                                 </div>
                                 <div class="d-flex gap-2">
-                                    <form method="POST" action="{{ route('admin.pembayaran.approve', $p->id) }}" class="flex-grow-1 needs-loading" onsubmit="return confirmAction(event, this, 'Approve Pembayaran?', 'Dana sudah masuk dan valid?', 'Ya, Setujui', '#4318FF');">
+                                    <form method="POST" action="{{ route('admin.pembayaran.approve', $p->id) }}" class="flex-grow-1 needs-loading" onsubmit="return confirmAction(event, this, 'Setujui Pembayaran?', 'Dana sudah masuk dan valid?', 'Ya, Setujui', '#4318FF');">
                                         @csrf
-                                        <button type="submit" class="btn btn-primary-custom w-100 rounded-pill">Approve</button>
+                                        <button type="submit" class="btn btn-primary-custom w-100 rounded-pill">Setujui</button>
                                     </form>
                                     <form method="POST" action="{{ route('admin.pembayaran.reject', $p->id) }}" class="flex-grow-1 needs-loading" onsubmit="return confirmAction(event, this, 'Tolak Pembayaran?', 'Pesanan ini akan dibatalkan.', 'Ya, Tolak', '#dc2626');">
                                         @csrf
-                                        <button type="submit" class="btn btn-outline-custom w-100 rounded-pill">Reject</button>
+                                        <button type="submit" class="btn btn-outline-custom w-100 rounded-pill">Tolak</button>
                                     </form>
                                 </div>
                             </div>
@@ -234,36 +234,6 @@
 
 <!-- Chart Configurations & Helpers -->
 <script>
-    // SweetAlert2 Confirmation Helper
-    function confirmAction(e, form, title, text, confirmText, confirmColor) {
-        e.preventDefault();
-        Swal.fire({
-            title: title,
-            text: text,
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: confirmColor,
-            cancelButtonColor: '#9ca3af',
-            confirmButtonText: confirmText,
-            cancelButtonText: 'Batal',
-            customClass: {
-                confirmButton: 'rounded-pill px-4',
-                cancelButton: 'rounded-pill px-4'
-            }
-        }).then((result) => {
-            if (result.isConfirmed) {
-                // Show loading on the button manually since we intercept submit
-                const btn = form.querySelector('button[type="submit"]');
-                if(btn) {
-                    btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
-                    btn.disabled = true;
-                }
-                form.submit();
-            }
-        });
-        return false;
-    }
-
     document.addEventListener("DOMContentLoaded", function() {
         // Bar Chart (Pendapatan Bulanan)
         const ctxRevenue = document.getElementById('revenueChart').getContext('2d');

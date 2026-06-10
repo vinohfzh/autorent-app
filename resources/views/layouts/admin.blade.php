@@ -52,6 +52,14 @@
         .status-dibatalkan { background: #fee2e2; color: #dc2626; }
         .status-menunggu { background: #fef3c7; color: #d97706; }
 
+        /* Utility */
+        .text-indigo { color: #4318FF !important; }
+        .bg-indigo { background-color: #4318FF !important; }
+
+        /* Sidebar overlay for mobile */
+        .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 99; }
+        .sidebar-overlay.show { display: block; }
+
         @media (max-width: 991.98px) {
             .sidebar { left: -260px; }
             .sidebar.show { left: 0; }
@@ -94,12 +102,13 @@
             </div>
         </div>
     </aside>
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="document.getElementById('sidebarMenu').classList.remove('show'); this.classList.remove('show');"></div>
 
     <!-- MAIN WRAPPER -->
     <div class="main-wrapper">
         <!-- NAVBAR -->
         <nav class="admin-navbar d-flex align-items-center justify-content-between">
-            <button class="btn btn-light d-lg-none bg-white border-0 shadow-sm rounded-circle p-2" type="button" onclick="document.getElementById('sidebarMenu').classList.toggle('show')">
+            <button class="btn btn-light d-lg-none bg-white border-0 shadow-sm rounded-circle p-2" type="button" onclick="document.getElementById('sidebarMenu').classList.toggle('show'); document.getElementById('sidebarOverlay').classList.toggle('show');">
                 <i class="bi bi-list fs-4"></i>
             </button>
             
@@ -112,8 +121,8 @@
                 <div class="dropdown">
                     <a class="profile-container dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         <div class="text-end d-none d-sm-block">
-                            <div class="small fw-bold text-dark" style="font-size: 0.85rem; line-height: 1;">Admin AutoRent</div>
-                            <div class="text-muted" style="font-size: 0.7rem;">SUPERADMIN</div>
+                            <div class="small fw-bold text-dark" style="font-size: 0.85rem; line-height: 1;">{{ Auth::user()->name }}</div>
+                            <div class="text-muted" style="font-size: 0.7rem;">{{ strtoupper(Auth::user()->role ?? 'USER') }}</div>
                         </div>
                         @if(Auth::user()->avatar)
                             <img src="{{ Storage::url(Auth::user()->avatar) }}" class="rounded-circle object-fit-cover" style="width: 38px; height: 38px;">
@@ -150,6 +159,35 @@
     <!-- SweetAlert2 for nice alerts -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
+        // === GLOBAL: SweetAlert2 Confirmation Helper ===
+        function confirmAction(e, form, title, text, confirmText, confirmColor) {
+            e.preventDefault();
+            Swal.fire({
+                title: title,
+                text: text,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: confirmColor,
+                cancelButtonColor: '#9ca3af',
+                confirmButtonText: confirmText,
+                cancelButtonText: 'Batal',
+                customClass: {
+                    confirmButton: 'rounded-pill px-4',
+                    cancelButton: 'rounded-pill px-4'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const btn = form.querySelector('button[type="submit"]');
+                    if(btn) {
+                        btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
+                        btn.disabled = true;
+                    }
+                    form.submit();
+                }
+            });
+            return false;
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
             // Loading State on Submit
             const forms = document.querySelectorAll('form.needs-loading');
@@ -165,16 +203,23 @@
 
             // Keyboard Shortcuts
             document.addEventListener('keydown', function(e) {
-                // Ignore if user is typing in an input
                 if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
-                
-                // Ctrl+K or / to focus search
                 if (e.key === '/' || (e.ctrlKey && e.key === 'k') || (e.metaKey && e.key === 'k')) {
                     e.preventDefault();
                     document.getElementById('globalSearchInput').focus();
                 }
             });
+
+            // Auto-hide flash alerts after 5 seconds
+            document.querySelectorAll('.alert-success, .alert-danger').forEach(el => {
+                setTimeout(() => {
+                    el.style.transition = 'opacity 0.5s';
+                    el.style.opacity = '0';
+                    setTimeout(() => el.remove(), 500);
+                }, 5000);
+            });
         });
     </script>
+    @stack('scripts')
 </body>
 </html>

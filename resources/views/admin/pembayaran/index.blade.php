@@ -4,9 +4,16 @@
 <div class="container-fluid px-0">
 
     @if(session('success'))
-        <div class="alert alert-success d-flex align-items-center gap-2 mb-4" role="alert">
+        <div class="alert alert-success d-flex align-items-center gap-2 mb-4 rounded-3 border-0 shadow-sm" role="alert" style="background-color: #f0fdf4; color: #166534;">
             <i class="bi bi-check-circle-fill"></i>
             <div>{{ session('success') }}</div>
+        </div>
+    @endif
+
+    @if(session('status'))
+        <div class="alert alert-success d-flex align-items-center gap-2 mb-4 rounded-3 border-0 shadow-sm" role="alert" style="background-color: #f0fdf4; color: #166534;">
+            <i class="bi bi-check-circle-fill"></i>
+            <div>{{ session('status') }}</div>
         </div>
     @endif
 
