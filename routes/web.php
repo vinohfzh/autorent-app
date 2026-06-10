@@ -7,6 +7,18 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/katalog', function () {
+    return view('katalog');
+});
+
+Route::get('/detail', function () {
+    return view('detail');
+});
+
+Route::get('/checkout', function () {
+    return view('checkout');
+});
+
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
