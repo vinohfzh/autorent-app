@@ -9,7 +9,7 @@ class Kendaraan extends Model
 {
     use HasFactory;
 
-    protected $table = 'kendaraan';
+    protected $table = 'kendaraans';
 
     protected $fillable = [
         'kategori_id',

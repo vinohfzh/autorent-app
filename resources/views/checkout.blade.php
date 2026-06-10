@@ -288,7 +288,7 @@
                         </div>
 
                         <!-- Action Button -->
-                        <button class="btn-continue">Lanjut ke Konfirmasi</button>
+                        <a href="/checkout-konfirmasi" class="btn btn-continue d-block text-center text-decoration-none">Lanjut ke Konfirmasi</a>
 
                     </div>
                 </div>
