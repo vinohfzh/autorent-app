@@ -10,7 +10,13 @@ class FrontController extends Controller
 {
     public function index()
     {
-        return view('welcome');
+        $kendaraans = Kendaraan::with('kategori')
+            ->where('status', 'tersedia')
+            ->latest()
+            ->take(3)
+            ->get();
+            
+        return view('welcome', compact('kendaraans'));
     }
 
     public function katalog(Request $request)
@@ -41,6 +47,14 @@ class FrontController extends Controller
     public function detail($id)
     {
         $kendaraan = Kendaraan::with('kategori')->findOrFail($id);
-        return view('detail', compact('kendaraan'));
+        
+        $relatedCars = Kendaraan::with('kategori')
+            ->where('status', 'tersedia')
+            ->where('id', '!=', $id)
+            ->inRandomOrder()
+            ->take(3)
+            ->get();
+            
+        return view('detail', compact('kendaraan', 'relatedCars'));
     }
 }

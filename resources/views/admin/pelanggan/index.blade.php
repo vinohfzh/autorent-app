@@ -31,6 +31,7 @@
                 <table class="table table-borderless align-middle table-hover mb-0">
                     <thead class="table-light">
                         <tr>
+                            <th class="small fw-semibold text-muted text-uppercase" style="letter-spacing: 0.5px; border-bottom: 2px solid #f4f7fe !important;">Nomor</th>
                             <th class="small fw-semibold text-muted text-uppercase" style="letter-spacing: 0.5px; border-bottom: 2px solid #f4f7fe !important;">Nama</th>
                             <th class="small fw-semibold text-muted text-uppercase" style="letter-spacing: 0.5px; border-bottom: 2px solid #f4f7fe !important;">No KTP</th>
                             <th class="small fw-semibold text-muted text-uppercase" style="letter-spacing: 0.5px; border-bottom: 2px solid #f4f7fe !important;">No Handphone</th>
@@ -58,7 +59,7 @@
                                 </td>
                                 <td class="py-3">
                                     <div class="d-flex align-items-center justify-content-end gap-2">
-                                        <a href="{{ route('admin.pelanggan.edit', $p->id) }}" class="btn btn-light btn-sm rounded-pill px-3" style="font-size: 0.75rem;">
+                                        <a href="{{ route('admin.pelanggan.edit', $p->id) }}" class="btn btn btn-warning text-white btn-sm rounded-pill px-3" style="font-size: 0.75rem;">
                                             <i class="bi bi-pencil me-1"></i> Edit
                                         </a>
                                         <form method="POST" action="{{ route('admin.pelanggan.destroy', $p->id) }}" class="needs-loading" onsubmit="return confirmAction(event, this, 'Hapus Pelanggan?', 'Data pelanggan {{ $p->nama }} akan dihapus permanen.', 'Ya, Hapus', '#dc2626');">

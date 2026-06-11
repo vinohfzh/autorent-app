@@ -18,25 +18,34 @@ class PembayaranController extends Controller
         return view('checkout-pembayaran', compact('transaksi'));
     }
 
-    /**
-     * Simpan data pembayaran.
-     */
     public function store(Request $request)
     {
         $request->validate([
-            'transaksi_id' => 'required|exists:transaksis,id',
-            'jumlah_bayar' => 'required|integer|min:1',
-            'metode'       => 'required|in:cash,transfer,qris',
-            'status_bayar' => 'required|in:lunas,belum_lunas,dp',
-            'tgl_bayar'    => 'required|date',
+            'transaksi_id'     => 'required|exists:transaksis,id',
+            'metode'           => 'required|in:bca,mandiri,bri,qris',
+            'bukti_pembayaran' => 'required|image|mimes:jpeg,png,jpg|max:5120',
         ]);
 
-        Pembayaran::create($request->only([
-            'transaksi_id', 'jumlah_bayar', 'metode', 'status_bayar', 'tgl_bayar'
-        ]));
+        $transaksi = Transaksi::findOrFail($request->transaksi_id);
+
+        $path = null;
+        if ($request->hasFile('bukti_pembayaran')) {
+            $path = $request->file('bukti_pembayaran')->store('bukti_pembayaran', 'public');
+        }
+
+        $metode = in_array($request->metode, ['bca', 'mandiri', 'bri']) ? 'transfer' : 'qris';
+
+        Pembayaran::create([
+            'transaksi_id'     => $transaksi->id,
+            'jumlah_bayar'     => $transaksi->total_harga,
+            'metode'           => $metode,
+            'status_bayar'     => 'belum_lunas', // Menunggu konfirmasi admin
+            'tgl_bayar'        => now(),
+            'bukti_pembayaran' => $path,
+        ]);
 
         return redirect()->route('riwayat')
-            ->with('status', 'Pembayaran berhasil dikonfirmasi! Selamat menikmati perjalanan Anda.');
+            ->with('success', 'Pembayaran berhasil dikirim! Menunggu konfirmasi admin.');
     }
 
     public function index()

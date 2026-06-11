@@ -16,7 +16,8 @@ class Pembayaran extends Model
         'jumlah_bayar',
         'metode',
         'status_bayar',
-        'tgl_bayar'
+        'tgl_bayar',
+        'bukti_pembayaran'
     ];
 
     public function transaksi()

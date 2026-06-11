@@ -1,5 +1,87 @@
-<nav class="navbar navbar-expand-md navbar-light bg-white border-bottom py-2">
+<style>
+    /* ===== GLOBAL NAVBAR STYLE (digunakan di semua halaman frontend) ===== */
+    #main-navbar {
+        background: rgba(255, 255, 255, 0.88);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        border-bottom: 1px solid rgba(243,244,246,0.8);
+        box-shadow: 0 2px 20px rgba(0,0,0,0.07);
+        z-index: 1050;
+    }
+    #main-navbar .brand-logo-box {
+        width: 32px; height: 32px;
+        background: #4f46e5;
+        border-radius: 8px;
+        display: flex; align-items: center; justify-content: center;
+        flex-shrink: 0;
+    }
+    #main-navbar .brand-text {
+        font-size: 1.2rem; font-weight: 800;
+        color: #4f46e5;
+        letter-spacing: -0.5px;
+        font-family: 'Inter', sans-serif;
+    }
+    #main-navbar .nav-link {
+        font-size: 0.875rem; font-weight: 500;
+        color: #6b7280 !important;
+        transition: color 0.15s ease;
+        padding: 0.25rem 0 !important;
+    }
+    #main-navbar .nav-link:hover { color: #111827 !important; }
+    #main-navbar .nav-link.active {
+        color: #4f46e5 !important;
+        border-bottom: 2px solid #4f46e5;
+    }
+    #main-navbar .btn-nav-login {
+        font-size: 0.875rem; font-weight: 500;
+        color: #374151; text-decoration: none;
+        transition: color 0.15s;
+    }
+    #main-navbar .btn-nav-login:hover { color: #4f46e5; }
+    #main-navbar .btn-nav-register {
+        background: linear-gradient(135deg, #6366f1, #4f46e5);
+        color: #fff; border: none;
+        font-size: 0.875rem; font-weight: 500;
+        padding: 0.45rem 1.35rem; border-radius: 50px;
+        transition: all 0.2s ease;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        text-decoration: none;
+    }
+    #main-navbar .btn-nav-register:hover {
+        background: linear-gradient(135deg, #4f46e5, #4338ca);
+        color: #fff; transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(79,70,229,0.35);
+    }
+    #main-navbar .user-avatar {
+        width: 30px; height: 30px;
+        background: #4f46e5;
+        border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        color: #fff; font-weight: 700; font-size: 13px;
+        flex-shrink: 0;
+    }
+    #main-navbar .dropdown-toggle {
+        font-size: 0.875rem; font-weight: 500;
+        color: #111827; text-decoration: none;
+    }
+    #main-navbar .dropdown-menu {
+        border-radius: 12px;
+        border: 1px solid #f3f4f6;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.10);
+        margin-top: 0.5rem !important;
+        min-width: 180px;
+    }
+    #main-navbar .dropdown-item {
+        font-size: 0.875rem; font-weight: 500;
+        color: #374151; padding: 0.6rem 1rem;
+    }
+    #main-navbar .dropdown-item:hover { background: #f9fafb; color: #4f46e5; }
+    #main-navbar .dropdown-item.text-danger:hover { background: #fef2f2; color: #b91c1c; }
+</style>
+
+<nav id="main-navbar" class="navbar navbar-expand-md fixed-top py-2">
     <div class="container-xl px-4 px-md-5">
+
         <!-- Logo -->
         <a class="navbar-brand d-flex align-items-center gap-2" href="{{ route('home') }}">
             <div class="brand-logo-box">
@@ -10,75 +92,73 @@
             <span class="brand-text">AutoRent</span>
         </a>
 
-        <!-- Hamburger -->
-        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
+        <!-- Mobile Toggle -->
+        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavMenu" aria-controls="mainNavMenu" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-list fs-4 text-dark"></i>
         </button>
 
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <!-- Left Side Of Navbar -->
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0 gap-md-3 ms-md-4">
+        <!-- Nav Links -->
+        <div class="collapse navbar-collapse" id="mainNavMenu">
+            <ul class="navbar-nav mx-auto gap-md-4 gap-2 py-3 py-md-0">
                 <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('home') ? 'active fw-bold text-indigo' : '' }}" href="{{ route('home') }}">Beranda</a>
+                    <a class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}" href="{{ route('home') }}">Beranda</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {{ request()->is('katalog') ? 'active fw-bold text-indigo' : '' }}" href="/katalog">Katalog</a>
+                    <a class="nav-link {{ request()->routeIs('katalog') ? 'active' : '' }}" href="{{ route('katalog') }}">Katalog</a>
                 </li>
+                @auth
                 <li class="nav-item">
-                    <a class="nav-link {{ request()->is('riwayat') ? 'active fw-bold text-indigo' : '' }}" href="/riwayat">Riwayat Sewa</a>
+                    <a class="nav-link {{ request()->routeIs('riwayat') ? 'active' : '' }}" href="{{ route('riwayat') }}">Riwayat Sewa</a>
                 </li>
+                @endauth
             </ul>
 
-            <!-- Right Side Of Navbar -->
-            <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+            <div class="d-flex align-items-center gap-3 py-2 py-md-0">
                 @auth
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            @if(Auth::user()->avatar)
-                                <img src="{{ Storage::url(Auth::user()->avatar) }}" alt="Avatar" class="rounded-circle object-fit-cover" width="32" height="32">
+                    <div class="dropdown">
+                        <a href="#" class="dropdown-toggle d-flex align-items-center gap-2 text-decoration-none" data-bs-toggle="dropdown" aria-expanded="false">
+                            @if(Auth::user()->avatar ?? false)
+                                <img src="{{ Storage::url(Auth::user()->avatar) }}" alt="Avatar" class="rounded-circle object-fit-cover" width="30" height="30">
                             @else
-                                <div class="bg-indigo text-white rounded-circle d-flex align-items-center justify-content-center" style="width:32px; height:32px; font-size:14px; font-weight:600;">
-                                    {{ substr(Auth::user()->name, 0, 1) }}
-                                </div>
+                                <div class="user-avatar">{{ substr(Auth::user()->name, 0, 1) }}</div>
                             @endif
-                            <span class="fw-medium text-dark">{{ Auth::user()->name }}</span>
+                            <span style="font-size:0.875rem;font-weight:500;color:#111827;">{{ Auth::user()->name }}</span>
                         </a>
-                        <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2" aria-labelledby="navbarDropdown">
+                        <ul class="dropdown-menu dropdown-menu-end">
                             <li>
                                 <a class="dropdown-item py-2" href="{{ route('profile.edit') }}">
-                                    <i class="bi bi-person me-2 text-muted"></i> Profil Saya
+                                    <i class="bi bi-person me-2 text-muted"></i>Profil Saya
                                 </a>
                             </li>
                             <li>
                                 <a class="dropdown-item py-2" href="{{ route('riwayat') }}">
-                                    <i class="bi bi-clock-history me-2 text-muted"></i> Riwayat Sewa
+                                    <i class="bi bi-clock-history me-2 text-muted"></i>Riwayat Sewa
                                 </a>
                             </li>
                             @if(Auth::user()->role === 'admin')
                             <li>
                                 <a class="dropdown-item py-2" href="{{ route('admin.dashboard') }}">
-                                    <i class="bi bi-speedometer2 me-2 text-muted"></i> Admin Panel
+                                    <i class="bi bi-speedometer2 me-2 text-muted"></i>Admin Panel
                                 </a>
                             </li>
                             @endif
-                            <li><hr class="dropdown-divider"></li>
+                            <li><hr class="dropdown-divider my-1"></li>
                             <li>
-                                <form method="POST" action="{{ route('logout') }}" id="user-logout-form" class="d-none">
-                                    @csrf
-                                </form>
-                                <a href="#" class="dropdown-item py-2 text-danger" onclick="event.preventDefault(); document.getElementById('user-logout-form').submit();">
-                                    <i class="bi bi-box-arrow-right me-2"></i> Keluar
+                                <form method="POST" action="{{ route('logout') }}" id="nav-logout-form" class="d-none">@csrf</form>
+                                <a href="#" class="dropdown-item py-2 text-danger"
+                                   onclick="event.preventDefault(); document.getElementById('nav-logout-form').submit();">
+                                    <i class="bi bi-box-arrow-right me-2"></i>Keluar
                                 </a>
                             </li>
                         </ul>
-                    </li>
+                    </div>
                 @else
-                    <li class="nav-item d-flex gap-2 align-items-center mt-2 mt-md-0">
-                        <a href="{{ route('login') }}" class="btn btn-outline-custom border-0 fw-medium">Masuk</a>
-                        <a href="{{ route('register') }}" class="btn btn-primary-custom text-white fw-medium">Daftar</a>
-                    </li>
+                    <a href="{{ route('login') }}" class="btn-nav-login">Masuk</a>
+                    @if (Route::has('register'))
+                        <a href="{{ route('register') }}" class="btn-nav-register">Daftar Sekarang</a>
+                    @endif
                 @endauth
-            </ul>
+            </div>
         </div>
     </div>
 </nav>

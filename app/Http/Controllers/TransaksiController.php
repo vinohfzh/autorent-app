@@ -15,7 +15,12 @@ class TransaksiController extends Controller
      */
     public function index()
     {
+        $userEmail = Auth::user()->email;
+
         $transaksis = Transaksi::with(['pelanggan', 'kendaraan', 'pembayaran'])
+            ->whereHas('pelanggan', function ($q) use ($userEmail) {
+                $q->where('email', $userEmail);
+            })
             ->latest()
             ->paginate(10);
 

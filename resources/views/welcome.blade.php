@@ -460,7 +460,28 @@
                 </ul>
                 <div class="d-flex align-items-center gap-3 py-2 py-md-0">
                     @auth
-                        <a href="{{ url('/dashboard') }}" class="btn-nav-login text-decoration-none">Dashboard</a>
+                        <div class="dropdown">
+                            <a href="#" class="btn-nav-login dropdown-toggle d-flex align-items-center gap-2 text-decoration-none" data-bs-toggle="dropdown" aria-expanded="false">
+                                <div class="rounded-circle d-flex align-items-center justify-content-center text-white" style="width:30px;height:30px;background:var(--indigo-600);font-weight:700;font-size:13px;">
+                                    {{ substr(Auth::user()->name, 0, 1) }}
+                                </div>
+                                <span class="d-none d-sm-inline">{{ Auth::user()->name }}</span>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2" style="border-radius:12px;">
+                                <li><a class="dropdown-item py-2" href="{{ route('profile.edit') }}"><i class="bi bi-person me-2 text-muted"></i>Profil Saya</a></li>
+                                <li><a class="dropdown-item py-2" href="{{ route('riwayat') }}"><i class="bi bi-clock-history me-2 text-muted"></i>Riwayat Sewa</a></li>
+                                @if(Auth::user()->role === 'admin')
+                                <li><a class="dropdown-item py-2" href="{{ route('admin.dashboard') }}"><i class="bi bi-speedometer2 me-2 text-muted"></i>Admin Panel</a></li>
+                                @endif
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <form method="POST" action="{{ route('logout') }}" id="welcome-logout-form" class="d-none">@csrf</form>
+                                    <a href="#" class="dropdown-item py-2 text-danger" onclick="event.preventDefault(); document.getElementById('welcome-logout-form').submit();">
+                                        <i class="bi bi-box-arrow-right me-2"></i>Keluar
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
                     @else
                         <a href="{{ route('login') }}" class="btn-nav-login text-decoration-none">Masuk</a>
                         @if (Route::has('register'))
@@ -480,7 +501,6 @@
                 <!-- Badge -->
                 <div class="hero-badge mb-4 reveal">
                     <span class="badge-dot"></span>
-                    Platform Sewa Mobil #1 di Indonesia
                 </div>
 
                 <!-- Headline -->
@@ -496,10 +516,10 @@
 
                 <!-- CTA Buttons -->
                 <div class="d-flex flex-column flex-sm-row justify-content-center align-items-center gap-3 mb-5 reveal">
-                    <a href="#fleet" class="btn-hero-primary text-decoration-none">
+                    <a href="{{ route('katalog') }}" class="btn-hero-primary text-decoration-none">
                         <i class="bi bi-search"></i> Cari Mobil
                     </a>
-                    <a href="#fleet" class="btn-hero-secondary text-decoration-none">
+                    <a href="{{ route('katalog') }}" class="btn-hero-secondary text-decoration-none">
                         Lihat Armada <i class="bi bi-arrow-right"></i>
                     </a>
                 </div>
@@ -581,109 +601,44 @@
             <div class="fleet-scroll-wrap reveal">
                 <div class="fleet-track">
 
-                    <!-- Tesla Model 3 -->
+                    @forelse($kendaraans as $k)
                     <div class="car-card">
                         <div class="car-img-wrap">
                             <div class="car-img-inner">
-                                <img src="{{ asset('img/tesla_model3.png') }}" alt="Tesla Model 3" loading="lazy">
-                                <span class="car-badge">⚡ Electric</span>
+                                @if($k->foto)
+                                    <img src="{{ Storage::url($k->foto) }}" alt="{{ $k->nama_mobil }}" loading="lazy">
+                                @else
+                                    <div style="width:100%; height:100%; background:#f3f4f6; display:flex; align-items:center; justify-content:center;">
+                                        <i class="bi bi-car-front text-muted" style="font-size:3rem; opacity:0.3;"></i>
+                                    </div>
+                                @endif
+                                <span class="car-badge">{{ $k->kategori?->nama_kategori ?? 'Umum' }}</span>
                             </div>
                         </div>
                         <div class="car-body">
-                            <div class="car-name">Tesla Model 3</div>
+                            <div class="car-name">{{ $k->nama_mobil }}</div>
                             <div class="car-specs">
                                 <div class="car-spec"><i class="bi bi-sliders"></i> Auto</div>
                                 <div class="car-spec"><i class="bi bi-people-fill"></i> 5 Kursi</div>
-                                <div class="car-spec"><i class="bi bi-lightning-charge"></i> 0–100 3.3s</div>
+                                <div class="car-spec"><i class="bi bi-fuel-pump"></i> {{ $k->kategori?->nama_kategori === 'Listrik (EV)' ? 'Listrik' : 'Bensin' }}</div>
                             </div>
                             <div class="car-footer">
                                 <div>
                                     <div class="price-label">Mulai Dari</div>
-                                    <span class="price-value">Rp 1.2jt</span>
+                                    <span class="price-value">Rp {{ number_format($k->harga_sewa, 0, ',', '.') }}</span>
                                     <span class="price-per">/hari</span>
                                 </div>
-                                <button class="btn-car-arrow"><i class="bi bi-arrow-right"></i></button>
+                                <a href="{{ route('detail', $k->id) }}" class="btn-car-arrow text-decoration-none d-flex align-items-center justify-content-center">
+                                    <i class="bi bi-arrow-right"></i>
+                                </a>
                             </div>
                         </div>
                     </div>
-
-                    <!-- BMW Series 5 -->
-                    <div class="car-card">
-                        <div class="car-img-wrap">
-                            <div class="car-img-inner">
-                                <img src="{{ asset('img/bmw_series5.png') }}" alt="BMW Series 5" loading="lazy">
-                                <span class="car-badge">⛽ Petrol</span>
-                            </div>
-                        </div>
-                        <div class="car-body">
-                            <div class="car-name">BMW Series 5</div>
-                            <div class="car-specs">
-                                <div class="car-spec"><i class="bi bi-sliders"></i> Auto</div>
-                                <div class="car-spec"><i class="bi bi-people-fill"></i> 5 Kursi</div>
-                                <div class="car-spec"><i class="bi bi-speedometer2"></i> 0–100 5.2s</div>
-                            </div>
-                            <div class="car-footer">
-                                <div>
-                                    <div class="price-label">Mulai Dari</div>
-                                    <span class="price-value">Rp 2.5jt</span>
-                                    <span class="price-per">/hari</span>
-                                </div>
-                                <button class="btn-car-arrow"><i class="bi bi-arrow-right"></i></button>
-                            </div>
-                        </div>
+                    @empty
+                    <div class="text-center w-100 py-4 text-muted">
+                        Belum ada armada tersedia saat ini.
                     </div>
-
-                    <!-- Land Rover Vogue -->
-                    <div class="car-card">
-                        <div class="car-img-wrap">
-                            <div class="car-img-inner">
-                                <img src="{{ asset('img/land_rover_vogue.png') }}" alt="Land Rover Vogue" loading="lazy">
-                                <span class="car-badge">🌿 Hybrid</span>
-                            </div>
-                        </div>
-                        <div class="car-body">
-                            <div class="car-name">Land Rover Vogue</div>
-                            <div class="car-specs">
-                                <div class="car-spec"><i class="bi bi-sliders"></i> Auto</div>
-                                <div class="car-spec"><i class="bi bi-people-fill"></i> 7 Kursi</div>
-                                <div class="car-spec"><i class="bi bi-crosshair2"></i> 4WD</div>
-                            </div>
-                            <div class="car-footer">
-                                <div>
-                                    <div class="price-label">Mulai Dari</div>
-                                    <span class="price-value">Rp 4.0jt</span>
-                                    <span class="price-per">/hari</span>
-                                </div>
-                                <button class="btn-car-arrow"><i class="bi bi-arrow-right"></i></button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Mini Cooper S -->
-                    <div class="car-card">
-                        <div class="car-img-wrap">
-                            <div class="car-img-inner">
-                                <img src="{{ asset('img/mini_cooper_s.png') }}" alt="Mini Cooper S" loading="lazy">
-                                <span class="car-badge">⛽ Petrol</span>
-                            </div>
-                        </div>
-                        <div class="car-body">
-                            <div class="car-name">Mini Cooper S</div>
-                            <div class="car-specs">
-                                <div class="car-spec"><i class="bi bi-sliders"></i> Auto</div>
-                                <div class="car-spec"><i class="bi bi-people-fill"></i> 4 Kursi</div>
-                                <div class="car-spec"><i class="bi bi-speedometer2"></i> 0–100 6.7s</div>
-                            </div>
-                            <div class="car-footer">
-                                <div>
-                                    <div class="price-label">Mulai Dari</div>
-                                    <span class="price-value">Rp 1.5jt</span>
-                                    <span class="price-per">/hari</span>
-                                </div>
-                                <button class="btn-car-arrow"><i class="bi bi-arrow-right"></i></button>
-                            </div>
-                        </div>
-                    </div>
+                    @endforelse
 
                 </div>
             </div>

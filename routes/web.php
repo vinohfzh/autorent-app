@@ -49,7 +49,8 @@ Route::get('/dashboard', function () {
     if (auth()->user() && auth()->user()->role === 'admin') {
         return redirect()->route('admin.dashboard');
     }
-    return view('dashboard');
+    // Redirect normal users to riwayat instead of a separate dashboard
+    return redirect()->route('riwayat');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
